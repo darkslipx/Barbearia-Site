@@ -1,5 +1,3 @@
-# Barbearia-Site -
-
 # 💈 Barbearia Estilo Clássico
 
 Sistema de agendamento online para uma barbearia, com interfaces separadas para clientes e administradores.
