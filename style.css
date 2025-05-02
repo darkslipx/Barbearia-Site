@@ -1,0 +1,199 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Header */
+header {
+    background-color: #222;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+header .logout {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+header .logout:hover {
+    text-decoration: underline;
+}
+
+/* Containers */
+.container,
+.cadastro-container,
+.login-container,
+.recuperar-container {
+    max-width: 600px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.admin-info  p {
+    text-align: center;
+    padding-bottom: 10px;
+
+}
+
+.container-admin {
+    max-width: 1300px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    
+}
+
+.logo {
+    display: block;
+    margin: 0 auto 20px;
+    width: 150px;
+}
+
+/* Títulos */
+h1, h2 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Formulários */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input-group input,
+select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Botões */
+button,
+.btn {
+    background-color: #2e7d32;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover,
+.btn:hover {
+    background-color: #1b5e20;
+}
+
+.btn-editar {
+    background-color: #0277bd;
+}
+
+.btn-editar:hover {
+    background-color: #01579b;
+}
+
+.btn-rejeitar {
+    background-color: #c62828;
+}
+
+.btn-rejeitar:hover {
+    background-color: #b71c1c;
+}
+
+.btn-aceitar {
+    background-color: #2e7d32;
+}
+
+.btn-aceitar:hover {
+    background-color: #1b5e20;
+}
+
+/* Tabela */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+.status-pendente {
+    color: #ff9800;
+    font-weight: bold;
+}
+
+.status-confirmado {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.status-recusar {
+    color: #f44336;
+    font-weight: bold;
+}
+
+/* Links */
+.links {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.links a {
+    color: #0277bd;
+    text-decoration: none;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+    .campo-nomes {
+        flex-direction: column;
+    }
+
+    header .logout {
+        position: static;
+        display: block;
+        margin-top: 10px;
+    }
+}
