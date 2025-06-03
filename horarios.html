@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Horários de Trabalho</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Gerenciar Horários</h1>      
+        <div class="user-profile">
+            <img src="img/foto-usuario-null.png" alt="Foto do perfil" class="profile-pic">
+            <span class="profile-name">Nome do Usuário</span>
+            <div class="profile-dropdown">
+                <a href="perfil.html">Meu Perfil</a>
+                <a href="javascript:history.back()">Voltar</a>
+                <a href="index.html">Sair</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Adicionar Horário de Trabalho</h2>
+
+        <form>
+            <div class="input-group">
+                <label for="profissional">Profissional:</label>
+                <select id="profissional" name="profissional">
+                    <option value="">Selecione</option>
+                    <option value="1">João Silva</option>
+                    <option value="2">Carlos Oliveira</option>
+                    <!-- Será preenchido dinamicamente futuramente -->
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="dia">Dia da Semana:</label>
+                <select id="dia" name="dia">
+                    <option value="">Selecione</option>
+                    <option value="Segunda-feira">Segunda-feira</option>
+                    <option value="Terça-feira">Terça-feira</option>
+                    <option value="Quarta-feira">Quarta-feira</option>
+                    <option value="Quinta-feira">Quinta-feira</option>
+                    <option value="Sexta-feira">Sexta-feira</option>
+                    <option value="Sábado">Sábado</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="horaInicio">Hora de Início:</label>
+                <input type="time" id="horaInicio" name="horaInicio">
+            </div>
+
+            <div class="input-group">
+                <label for="horaFim">Hora de Término:</label>
+                <input type="time" id="horaFim" name="horaFim">
+            </div>
+
+            <button class="btn" type="submit">Salvar Horário</button>
+        </form>
+
+        <hr style="margin: 30px 0;">
+
+        <h2>Horários Cadastrados</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Profissional</th>
+                    <th>Dia</th>
+                    <th>Início</th>
+                    <th>Término</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>João Silva</td>
+                    <td>Segunda-feira</td>
+                    <td>08:00</td>
+                    <td>17:00</td>
+                    <td>
+                        <button class="btn btn-editar">Editar</button>
+                        <button class="btn btn-rejeitar">Excluir</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Carlos Oliveira</td>
+                    <td>Terça-feira</td>
+                    <td>10:00</td>
+                    <td>18:00</td>
+                    <td>
+                        <button class="btn btn-editar">Editar</button>
+                        <button class="btn btn-rejeitar">Excluir</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -5,58 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Área do Cliente</title>
     <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
-    <header>
-        <h1>Barbearia Estilo Clássico</h1>
-        <a href="index.html" class="logout">Sair</a>
+<header>
+        <h1>Área do Cliente</h1>
+        <div class="user-profile">
+            <img src="img/foto-usuario-null.png" alt="Foto do perfil" class="profile-pic">
+            <span class="profile-name">Nome do Usuário</span>
+            <div class="profile-dropdown">
+                <a href="perfil.html">Meu Perfil</a>
+                <a href="javascript:history.back()">Voltar</a>
+                <a href="index.html">Sair</a>
+            </div>
+        </div>
     </header>
     
     <div class="container">
         <div class="usuario-info">
-            <h2>Bem-vindo, Cliente!</h2>
+            <h2>Bem-vindo, <span id="nome-cliente">Cliente</span>!</h2>
             <p>Aqui você pode agendar seu horário e ver seus agendamentos confirmados.</p>
         </div>
         
         <div class="agendamento-section">
             <h2>Agendar Horário</h2>
-            <form>
-                <label for="date">Data:</label>
-                <input type="date" id="date" name="date" required>
+            <form id="form-agendamento">
+                <div class="input-group">
+                    <label for="profissional">Profissional:</label>
+                    <select id="profissional" name="profissional" required>
+                        <option value="">Selecione um profissional</option>
+                        <option value="1">João (Cabelo e Barba)</option>
+                        <option value="2">Carlos (Especialista em Barba)</option>
+                        <option value="3">Marcos (Cortes Modernos)</option>
+                    </select>
+                </div>
                 
-                <label for="time">Horário:</label>
-                <input type="time" id="time" name="time" required>
+                <div class="input-group">
+                    <label for="date">Data:</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
                 
-                <label for="servico">Serviço:</label>
-                <select id="servico" name="servico">
-                    <option value="corte">Corte de Cabelo</option>
-                    <option value="barba">Barba</option>
-                    <option value="completo">Corte + Barba</option>
-                </select>
+                <div class="input-group">
+                    <label for="time">Horário:</label>
+                    <input type="time" id="time" name="time" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="servico">Serviço:</label>
+                    <select id="servico" name="servico">
+                        <option value="corte">Corte de Cabelo - R$ 40,00</option>
+                        <option value="barba">Barba - R$ 30,00</option>
+                        <option value="completo">Corte + Barba - R$ 60,00</option>
+                        <option value="pigmentacao">Pigmentação - R$ 50,00</option>
+                    </select>
+                </div>
                 
                 <button type="submit" class="btn">Solicitar Agendamento</button>
             </form>
         </div>
         
         <div class="agendamento-section" style="margin-top: 20px;">
-            <h2>Meus Agendamentos Confirmados</h2>
+            <h2>Meus Agendamentos</h2>
             <table>
-                <tr>
-                    <th>Data</th>
-                    <th>Horário</th>
-                    <th>Serviço</th>
-                    <th>Status</th>
-                </tr>
-                <tr>
-                    <td>15/06/2023</td>
-                    <td>14:00</td>
-                    <td>Corte de Cabelo</td>
-                    <td>Confirmado</td>
-                </tr>
-                <!-- Mais agendamentos seriam listados aqui -->
-            </table>
-        </div>
-    </div>
-</body>
-</html>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Horário</th>
+                        <th>Profissional</th>
+                        <th>Serviço</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>15/06/2023</td>
+                        <td>14:00</td>
+                        <td>João</td>
+                        <td>Corte de Cabelo</td>
+                        <td class="status-confirmado">Confirmado</td>
+                        <td><button class="btn btn-editar">Editar</button></td>
+                    </tr>
+                    <tr>
+                        <td>18/06/2023</td>
+                        <td>10:30</td>
+                        <td>Carlos</td>
+                        <td>Barba</td>
+                        <td class="status-pendente">Pendente</td>
+                        <td><button class="btn btn-editar">Editar</button></td>
+                    </tr

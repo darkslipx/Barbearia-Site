@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<header>
+        <h1>Cadastro de Profisisonal</h1>
+        <div class="user-profile">
+            <img src="img/foto-usuario-null.png" alt="Foto do perfil" class="profile-pic">
+            <span class="profile-name">Nome do Usuário</span>
+            <div class="profile-dropdown">
+                <a href="perfil.html">Meu Perfil</a>
+                <a href="javascript:history.back()">Voltar</a>
+                <a href="index.html">Sair</a>
+            </div>
+        </div>
+    </header>
     <div class="cadastro-container">
         <img src="img/logotipo-da-barbearia.jpg" alt="Logo Barbearia" class="logo">
         <h1>Crie sua conta</h1>
@@ -42,7 +54,6 @@
             <div class="input-group">
                 <label for="nivel">Tipo de Conta</label>
                 <select id="nivel" name="nivel" required>
-                    <option value="cliente">Cliente</option>
                     <option value="profissional">Profissional</option>
                 </select>
             </div>
