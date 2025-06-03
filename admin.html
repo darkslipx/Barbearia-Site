@@ -244,24 +244,5 @@
         </div>
     </div>
 
-    <script>
-        function openTab(tabName) {
-            // Esconde todos os conteúdos das tabs
-            const tabContents = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabContents.length; i++) {
-                tabContents[i].classList.remove("active");
-            }
-            
-            // Remove a classe 'active' de todos os botões
-            const tabButtons = document.getElementsByClassName("tab-btn");
-            for (let i = 0; i < tabButtons.length; i++) {
-                tabButtons[i].classList.remove("active");
-            }
-            
-            // Mostra a tab atual e marca o botão como ativo
-            document.getElementById(tabName).classList.add("active");
-            event.currentTarget.classList.add("active");
-        }
-    </script>
 </body>
 </html>
