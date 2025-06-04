@@ -6,33 +6,7 @@
     <title>Área do Administrador</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<script>
-function openTab(tabId) {
-    // Esconde todo conteúdo de aba
-    var contents = document.querySelectorAll('.tab-content');
-    contents.forEach(function(content) {
-        content.classList.remove('active');
-    });
-
-    // Remove o 'active' de todos os botões
-    var buttons = document.querySelectorAll('.tab-btn');
-    buttons.forEach(function(btn) {
-        btn.classList.remove('active');
-    });
-
-    // Mostra o conteúdo da aba clicada
-    document.getElementById(tabId).classList.add('active');
-    // Ativa o botão da aba clicada
-    var currentBtn = Array.from(buttons).find(btn => btn.textContent.toLowerCase() === tabId);
-    if (!currentBtn) {
-        // Caso não encontre pelo texto, ativa pelo índice
-        var index = Array.from(contents).findIndex(c => c.id === tabId);
-        if (index >= 0) buttons[index].classList.add('active');
-    } else {
-        currentBtn.classList.add('active');
-    }
-}
-</script>
+<script src="js/script.js"></script>
 
 <body>
 <header>
