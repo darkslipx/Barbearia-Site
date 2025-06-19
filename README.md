@@ -53,8 +53,9 @@ README.md
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seuusuario/seurepositorio.git
-cd seurepositorio
+git clone gh repo clone darkslipx/Barbearia-Site
+cd Barbearia-Site
+
 2. Configure e rode o backend
 Requisitos: Java 17+, Maven, SQL Server rodando.
 
@@ -69,19 +70,20 @@ Copy
 Edit
 cd backend
 ./mvnw spring-boot:run
+
 3. Rode o frontend
 Basta abrir index.html ou admin.html dentro da pasta /frontend com seu navegador.
 
 Os arquivos HTML, CSS e JS estão prontos para uso local.
 
-📝 Scripts do Banco de Dados
+📝 Scripts Banco de Dados
 O script de criação das tabelas e inserção de dados está disponível na pasta /BarbeariaDoPra/sql/ ou pode ser solicitado ao administrador do repositório.
 
 👤 Autores
 Abner Evandro Duarte
 Pedro Thiago Campus
 Vitor Natti Salgado
-Mateus Henrique do Santos Pereira
+Mateus Henrique dos Santos Pereira
 
 📃 Licença
 Projeto desenvolvido para fins acadêmicos e de estudo.
