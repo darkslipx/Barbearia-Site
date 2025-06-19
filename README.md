@@ -30,24 +30,22 @@ O sistema permite que clientes agendem horários com profissionais e serviços, 
 
 ## 📁 Estrutura do Projeto
 
-/
-├── backend/ # Projeto Spring Boot (Java)
-│ └── ... (código backend)
-├── frontend/ # Aplicação web (HTML, CSS, JS)
-│ ├── admin.html
-│ ├── cadastro.html
-│ ├── cadastroadmin.html
-│ ├── cliente.html
-│ ├── horarios.html
-│ ├── index.html
-│ ├── login.html
-│ ├── perfil.html
-│ ├── recuperar.html
-│ ├── script.js
-│ └── style.css
-├── img/ # Imagens da interface
-├── README.md
-└── ...
+BarbeariaDoPra/ # Projeto Spring Boot (Java)
+- (código backend)
+frontend/ # Aplicação web (HTML, CSS, JS)
+admin.html
+cadastro.html
+cadastroadmin.html
+cliente.html
+horarios.html
+index.html
+login.html
+perfil.html
+recuperar.html
+script.js
+style.css
+img/ # Imagens da interface
+README.md
 ---
 
 ## ⚙️ Como Executar o Projeto
@@ -77,14 +75,13 @@ Basta abrir index.html ou admin.html dentro da pasta /frontend com seu navegador
 Os arquivos HTML, CSS e JS estão prontos para uso local.
 
 📝 Scripts do Banco de Dados
-O script de criação das tabelas e inserção de dados está disponível na pasta /backend/sql/ ou pode ser solicitado ao administrador do repositório.
+O script de criação das tabelas e inserção de dados está disponível na pasta /BarbeariaDoPra/sql/ ou pode ser solicitado ao administrador do repositório.
 
-👤 Autor
-Nome: Seu Nome
-
-E-mail: seu.email@exemplo.com
-
-GitHub: seuusuario
+👤 Autores
+Abner Evandro Duarte
+Pedro Thiago Campus
+Vitor Natti Salgado
+Mateus Henrique do Santos Pereira
 
 📃 Licença
 Projeto desenvolvido para fins acadêmicos e de estudo.
