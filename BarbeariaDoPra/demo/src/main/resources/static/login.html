@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barbearia - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <img src="img/logotipo-da-barbearia.jpg" alt="Logo Barbearia" class="logo">
+        <h1>Faça seu login</h1>
+        <div id="login-msg" style="color:red; text-align:center; margin-bottom:10px;"></div>
+        <form id="login-form">
+            <div class="input-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Entrar</button>
+        </form>
+        <div class="links">
+            <a href="recuperar.html">Esqueci minha senha</a> | 
+            <a href="cadastro.html">Cadastrar-se</a>
+        </div>
+    </div>
+    <script src="js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Administrador</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <h1>Área do Administrador</h1>
+    <div class="user-profile">
+        <img src="img/foto-usuario-null.png" alt="Foto do perfil" class="profile-pic">
+        <span class="profile-name" id="nome-usuario">Nome do Usuário</span>
+        <div class="profile-dropdown">
+            <a href="perfil.html">Meu Perfil</a>
+            <a href="javascript:history.back()">Voltar</a>
+            <a href="index.html">Sair</a>
+        </div>
+    </div>
+</header>
+
+<div class="container-admin">
+    <div id="alerta" style="display:none; margin-bottom:15px; color: #fff; background: #4caf50; padding: 10px; border-radius:5px;">
+        Mensagem de sucesso!
+    </div>
+    <div class="admin-info">
+        <h2>Bem-vindo, Administrador!</h2>
+        <p>Aqui você pode gerenciar todos os agendamentos, profissionais, clientes, usuários e serviços da barbearia.</p>
+    </div>
+
+    <!-- TABS -->
+    <!-- ... -->
+<div class="tabs">
+    <button class="tab-btn active" onclick="openTab('agendamentos')">Agendamentos</button>
+    <button class="tab-btn" onclick="openTab('profissionais')">Profissionais</button>
+    <button class="tab-btn" onclick="openTab('clientes')">Clientes</button>
+    <button class="tab-btn" onclick="openTab('horarios')">Horários</button>
+    <button class="tab-btn" onclick="openTab('funcionamento')">Funcionamento</button> 
+    <button class="tab-btn" onclick="openTab('servicos')">Serviços</button>
+</div>
+<!-- ... -->
+
+
+    <!-- AGENDAMENTOS -->
+    <div id="agendamentos" class="tab-content active">
+        <div class="filtros">
+            <input type="text" id="filtroCliente" placeholder="Buscar por cliente" class="input-filtro">
+            <input type="date" id="filtroData" class="input-filtro">
+            <select id="filtroStatus" class="input-filtro">
+                <option value="">Todos os status</option>
+                <option value="pendente">Pendente</option>
+                <option value="confirmado">Confirmado</option>
+                <option value="recusado">Recusado</option>
+            </select>
+            <button class="btn" id="btnFiltrarAgendamentos">Filtrar</button>
+        </div>
+        <h2>Agendamentos Pendentes</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Data</th>
+                    <th>Horário</th>
+                    <th>Profissional</th>
+                    <th>Serviço</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tbody-agendamentos">
+                <!-- Preenchido via JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PROFISSIONAIS -->
+    <div id="profissionais" class="tab-content">
+        <h2>Profissionais Cadastrados</h2>
+        <div class="filtros">
+            <input id="filtroNomeProf" type="text" placeholder="Nome">
+            <input id="filtroEmailProf" type="text" placeholder="Buscar por e-mail">
+            <input id="filtroTelefoneProf" type="text" placeholder="Buscar por telefone">
+            <button id="btnFiltrarProfissionais">Filtrar</button>
+
+        </div>
+        <a href="cadastroadmin.html" class="btn" style="margin-bottom: 15px; display: inline-block;">+ Adicionar Profissional</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Telefone</th>
+                    <th>Data Nasc.</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tbody-profissionais">
+                <!-- Preenchido via JS -->
+            </tbody>
+        </table>
+        <!-- Modal Edição Profissional -->
+<div id="modal-editar-prof" class="detalhes-modal" style="display:none;">
+    <div class="detalhes-card">
+        <h3>Editar Profissional</h3>
+        <form id="form-editar-prof">
+            <input type="hidden" id="edit-idProfissional">
+            <div>
+                <label for="edit-nomeProf">Nome:</label>
+                <input type="text" id="edit-nomeProf" required>
+            </div>
+            <div>
+                <label for="edit-emailProf">E-mail:</label>
+                <input type="email" id="edit-emailProf" required>
+            </div>
+            <div>
+                <label for="edit-telefoneProf">Telefone:</label>
+                <input type="text" id="edit-telefoneProf" required>
+            </div>
+            <div>
+                <label for="edit-nascProf">Data Nasc.:</label>
+                <input type="date" id="edit-nascProf" required>
+            </div>
+            <button type="submit" class="btn">Salvar</button>
+            <button type="button" class="btn btn-fechar" onclick="fecharModalEditarProf()">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+    </div>
+
+    <!-- CLIENTES -->
+            <!-- ...dentro da aba CLIENTES... -->
+<div id="clientes" class="tab-content">
+    <h2>Clientes Cadastrados</h2>
+    <div class="filtros">
+        <input id="filtroNomeCliente" type="text" placeholder="Buscar por nome">
+        <input id="filtroEmailCliente" type="text" placeholder="Buscar por e-mail">
+        <input id="filtroTelefoneCliente" type="text" placeholder="Buscar por telefone">
+        <button id="btnFiltrarClientes">Filtrar</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Data Nasc.</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tbody-clientes">
+            <!-- Preenchido via JS -->
+        </tbody>
+    </table>
+    <!-- Modal Edição Cliente -->
+    <div id="modal-editar-cliente" class="detalhes-modal" style="display:none;">
+        <div class="detalhes-card">
+            <h3>Editar Cliente</h3>
+            <form id="form-editar-cliente">
+                <input type="hidden" id="edit-idCliente">
+                <div>
+                    <label for="edit-nomeCliente">Nome:</label>
+                    <input type="text" id="edit-nomeCliente" required>
+                </div>
+                <div>
+                    <label for="edit-emailCliente">E-mail:</label>
+                    <input type="email" id="edit-emailCliente" required>
+                </div>
+                <div>
+                    <label for="edit-telefoneCliente">Telefone:</label>
+                    <input type="text" id="edit-telefoneCliente" required>
+                </div>
+                <div>
+                    <label for="edit-nascCliente">Data Nasc.:</label>
+                    <input type="date" id="edit-nascCliente" required>
+                </div>
+                <button type="submit" class="btn">Salvar</button>
+                <button type="button" class="btn btn-fechar" onclick="fecharModalEditarCliente()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+  <!-- HORÁRIOS DE FUNCIONAMENTO -->
+<div id="horarios" class="tab-content">
+    <h2>Horários de Funcionamento</h2>
+    <a href="horarios.html">
+        <button class="btn" style="margin-bottom: 15px;">+ Adicionar Horário</button>
+    </a>
+   <div class="filtros">
+    <input id="filtroProfissionalHorario" type="text" placeholder="Buscar por profissional">
+    <select id="filtroDiaHorario">
+        <option value="">Todos os dias</option>
+        <option value="DOMINGO">Domingo</option>
+        <option value="SEGUNDA_FEIRA">Segunda-feira</option>
+        <option value="TERCA_FEIRA">Terça-feira</option>
+        <option value="QUARTA_FEIRA">Quarta-feira</option>
+        <option value="QUINTA_FEIRA">Quinta-feira</option>
+        <option value="SEXTA_FEIRA">Sexta-feira</option>
+        <option value="SABADO">Sábado</option>
+    </select>
+    <select id="filtroStatusHorario">
+        <option value="">Todos os status</option>
+        <option value="disponivel">Disponível</option>
+        <option value="bloqueado">Bloqueado</option>
+    </select>
+    <select id="filtroHoraInicio"></select>
+    <button onclick="listarHorarios()">Filtrar</button>
+</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Profissional</th>
+                <th>Dia da Semana</th>
+                <th>Horário Início</th>
+                <th>Horário Fim</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tbody-horarios">
+            <!-- Preenchido via JS -->
+        </tbody>
+    </table>
+</div>
+
+
+<!-- FUNCIONAMENTO DOS PROFISSIONAIS -->
+<div id="funcionamento" class="tab-content">
+    <h2>Disponibilidade dos Profissionais</h2>
+    <form id="form-funcionamento" style="margin-bottom: 15px;">
+        <select id="profissional" required></select>
+        <select id="func-dia" name="dia" required>
+            <option value="">Selecione o dia</option>
+            <option value="SEGUNDA_FEIRA">Segunda-feira</option>
+            <option value="TERCA_FEIRA">Terça-feira</option>
+            <option value="QUARTA_FEIRA">Quarta-feira</option>
+            <option value="QUINTA_FEIRA">Quinta-feira</option>
+            <option value="SEXTA_FEIRA">Sexta-feira</option>
+            <option value="SABADO">Sábado</option>
+            <option value="DOMINGO">Domingo</option>
+        </select>
+        <input id="func-horaInicio" type="time" name="horaInicio" required>
+        <input id="func-horaFim" type="time" name="horaFim" required>
+        <button type="submit" class="btn">Cadastrar Disponibilidade</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Profissional</th>
+                <th>Dia da Semana</th>
+                <th>Início</th>
+                <th>Fim</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="funcionamento-tbody"></tbody>
+    </table>
+</div>
+<!-- Modal de exclusão -->
+<div id="modal-excluir-func" style="display:none;">
+    <div>
+        <p>Deseja excluir esta disponibilidade?</p>
+        <button id="btn-confirmar-excluir-func">Confirmar</button>
+    </div>
+</div>
+
+
+   <!-- SERVIÇOS -->
+<div id="servicos" class="tab-content">
+    <h2>Serviços Cadastrados</h2>
+    <form id="form-servico" style="margin-bottom: 15px;">
+        <div class="input-group">
+            <label for="nome-servico">Nome do Serviço</label>
+            <input type="text" id="nome-servico" name="nome-servico" placeholder="Ex: Corte de Cabelo" required>
+        </div>
+        <div class="input-group">
+            <label for="valor-servico">Valor (R$)</label>
+            <input type="number" id="valor-servico" name="valor-servico" placeholder="Ex: 40.00" required>
+        </div>
+        <button type="submit" class="btn">Cadastrar Serviço</button>
+        <button type="button" id="btn-cancelar-edicao-servico" class="btn" style="display:none;background:#b0b0b0;">Cancelar</button>
+    </form>
+    <div class="filtros">
+        <input type="text" id="filtroNomeServico" placeholder="Buscar por nome" class="input-filtro">
+        <button class="btn" id="btnFiltrarServicos">Filtrar</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Serviço</th>
+                <th>Valor</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tbody-servicos">
+            <!-- Preenchido via JS -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal de Detalhes do Agendamento -->
+<div id="detalhes-agendamento" class="detalhes-modal" style="display: none;">
+    <div class="detalhes-card">
+        <h3>Detalhes do Agendamento</h3>
+        <p><strong>Cliente:</strong> <span id="detalhe-cliente"></span></p>
+        <p><strong>Profissional:</strong> <span id="detalhe-profissional"></span></p>
+        <p><strong>Data:</strong> <span id="detalhe-data"></span></p>
+        <p><strong>Horário:</strong> <span id="detalhe-horario"></span></p>
+        <p><strong>Serviço:</strong> <span id="detalhe-servico"></span></p>
+        <p><strong>Status:</strong> <span id="detalhe-status"></span></p>
+        <button class="btn btn-fechar" onclick="fecharDetalhes()">Fechar</button>
+    </div>
+</div>
+<!-- Modal Detalhes Horário -->
+<div id="modal-detalhes-horario" class="detalhes-modal" style="display:none;">
+    <div class="detalhes-card">
+        <h3>Detalhes do Horário</h3>
+        <p><strong>Profissional:</strong> <span id="detalhe-prof-horario"></span></p>
+        <p><strong>Dia da Semana:</strong> <span id="detalhe-dia-horario"></span></p>
+        <p><strong>Início:</strong> <span id="detalhe-inicio-horario"></span></p>
+        <p><strong>Fim:</strong> <span id="detalhe-fim-horario"></span></p>
+        <button type="button" class="btn btn-fechar" onclick="fecharModalDetalhesHorario()">Fechar</button>
+    </div>
+</div>
+
+
+<!-- JS sempre no final do body para garantir carregamento -->
+<script src="js/admin.js"></script>
+</body>
+</html>
