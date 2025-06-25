@@ -1,82 +1,91 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <!-- Configurações básicas de charset, responsividade, título e CSS -->
     <meta charset="UTF-8">
     <title>Agendamento de Horário</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS principal e do Flatpickr (calendário) -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Scripts do Flatpickr (calendário) e idioma português -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 </head>
 <body>
+    <!-- Cabeçalho com menu do usuário -->
     <header>
-    <h1>Área do Cliente</h1>
-    <div class="user-profile">
-        <img src="img/foto-usuario-null.png" alt="Foto do perfil" class="profile-pic">
-        <span class="profile-name" id="nome-usuario-header">Usuário</span>
-        <div class="profile-dropdown">
-            <a href="perfil.html">Meu Perfil</a>
-            <a href="javascript:history.back()">Voltar</a>
-            <a href="index.html" onclick="localStorage.clear()">Sair</a>
+        <h1>Área do Cliente</h1>
+        <div class="user-profile">
+             <img id="foto-perfil" src="img/perfil-cliente.png" alt="Foto do perfil" class="profile-pic">
+            <span class="profile-name" id="nome-usuario-header">Usuário</span>
+            <div class="profile-dropdown">
+                <a href="perfil.html">Meu Perfil</a>
+                <a href="javascript:history.back()">Voltar</a>
+                <a href="index.html" onclick="localStorage.clear()">Sair</a>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
+    <!-- Formulário para solicitar agendamento -->
     <div class="container">
         <h2>Solicitar Agendamento</h2>
         <form id="form-agendamento">
+            <!-- Seleção de profissional -->
             <div class="input-group">
                 <label for="profissional">Profissional:</label>
                 <select id="profissional" name="profissional" required>
                     <option value="">Selecione um profissional</option>
                 </select>
             </div>
+            <!-- Seleção de data (habilitada após profissional) -->
             <div class="input-group">
                 <label for="date">Data:</label>
                 <input type="text" id="date" name="date" required disabled>
             </div>
+            <!-- Seleção de horário (habilitada após data) -->
             <div class="input-group">
                 <label for="horario">Horário:</label>
                 <select id="horario" name="horario" required disabled>
                     <option value="">Selecione um horário</option>
                 </select>
             </div>
+            <!-- Seleção do serviço (corte, barba etc.) -->
             <div class="input-group">
-              <select id="servico" name="servico" required>
-                <option value="">Selecione um serviço</option>
-                <!-- As opções serão preenchidas via JS -->
+                <select id="servico" name="servico" required>
+                    <option value="">Selecione um serviço</option>
+                    <!-- Preenchido dinamicamente pelo JS -->
                 </select>
-
             </div>
             <button type="submit" class="btn">Solicitar Agendamento</button>
         </form>
+        <!-- Mensagem de retorno para usuário -->
         <div id="msg-agendamento" style="margin-top: 10px;"></div>
     </div>
 
- <div class="area-agendamentos-wrapper">
-    <div class="area-agendamentos" style="margin-top:32px;">
-        <h3>Meus Agendamentos</h3>
-        <table id="tabela-agendamentos">
-    <thead>
-        <tr>
-            <th>Data</th>
-            <th>Horário</th>
-            <th>Profissional</th>
-            <th>Serviço</th>
-            <th>Status</th>
-            <th>Ações</th> <!-- NOVO -->
-        </tr>
-    </thead>
-    <tbody id="tbody-agendamentos">
-        <tr><td colspan="6">Carregando...</td></tr>
-    </tbody>
-</table>
-
+    <!-- Área de visualização dos agendamentos do cliente -->
+    <div class="area-agendamentos-wrapper">
+        <div class="area-agendamentos" style="margin-top:32px;">
+            <h3>Meus Agendamentos</h3>
+            <table id="tabela-agendamentos">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Horário</th>
+                        <th>Profissional</th>
+                        <th>Serviço</th>
+                        <th>Status</th>
+                        <th>Ações</th> <!-- Botão de cancelar, etc. -->
+                    </tr>
+                </thead>
+                <tbody id="tbody-agendamentos">
+                    <tr><td colspan="6">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-
+    <!-- Script principal da página (lógica JS) -->
     <script src="js/agendamento.js"></script>
 </body>
 </html>

@@ -1,101 +1,147 @@
 const API_URL = "http://localhost:8080";
 
-// Pega o ID do cliente logado
-function getClienteId() {
-    // Ajude o login a salvar isso! Ajuste conforme salvar no localStorage
-    return localStorage.getItem("usuarioId") || localStorage.getItem("clienteId") || null;
+// Função para pegar o ID do usuário logado
+function getUsuarioId() {
+    return localStorage.getItem("usuarioId") || null;
 }
 
-let dadosOriginais = {};
+// Função para pegar o nível do usuário logado
+function getUsuarioNivel() {
+    return (localStorage.getItem("usuarioNivel") || "").toUpperCase();
+}
 
+let dadosOriginais = {}; // Armazena os dados atuais para comparação
+
+// Ao carregar a página, exibe o nome do usuário no header e atualiza a foto padrão conforme nível
 document.addEventListener('DOMContentLoaded', function () {
     const nome = localStorage.getItem('usuarioNome') || 'Usuário';
-    document.getElementById('nome-usuario').textContent = nome;
+    const nivel = getUsuarioNivel();
+    const nomeElemento = document.getElementById('nome-usuario-header');
+    const profilePic = document.querySelector('.profile-pic');
+
+    if (nomeElemento) {
+        nomeElemento.textContent = nome;
+    }
+
+    if (profilePic) {
+        if (nivel === 'PROFISSIONAL') {
+            profilePic.src = 'img/barbeiro.png'; // Caminho da foto padrão profissional
+        } else {
+            profilePic.src = 'img/perfil-cliente.png'; // Caminho da foto padrão cliente
+        }
+    }
 });
 
+// Função que busca os dados do perfil conforme nível e idPessoa
 async function carregarPerfil() {
-    // Pega o idPessoa do usuário logado
-    const idPessoa = localStorage.getItem('usuarioId');
+    const idPessoa = getUsuarioId();
+    const nivel = getUsuarioNivel();
     if (!idPessoa) return;
 
     try {
-        // Busca o cliente pelo idPessoa!
-        const resp = await fetch(`${API_URL}/clientes/pessoa/${idPessoa}`);
-        if (!resp.ok) {
-            document.getElementById('profile-msg').innerText = "Cliente não encontrado!";
+        let resp;
+        if (nivel === "CLIENTE") {
+            // Busca dados de cliente
+            resp = await fetch(`${API_URL}/clientes/pessoa/${idPessoa}`);
+        } else if (nivel === "PROFISSIONAL" || nivel === "ADMIN") {
+            // Busca dados de profissional/admin
+            resp = await fetch(`${API_URL}/profissional/${idPessoa}`);
+        } else {
+            // Se nível desconhecido, para aqui
+            const msgElem = document.getElementById('profile-msg');
+            if (msgElem) msgElem.innerText = "Nível de usuário desconhecido.";
             return;
         }
+
+        if (!resp.ok) {
+            const msgElem = document.getElementById('profile-msg');
+            if (msgElem) msgElem.innerText = `${nivel} não encontrado!`;
+            return;
+        }
+
         const dados = await resp.json();
         dadosOriginais = dados;
-        document.getElementById('nome').value = dados.pessoa?.nome || "";
-        document.getElementById('email').value = dados.pessoa?.email || "";
-        document.getElementById('telefone').value = dados.telefone || "";
-        document.getElementById('nascimento').value = dados.dataNascimento || "";
-        localStorage.setItem("clienteId", dados.idCliente); // Atualiza o clienteId!
+
+        // Preenche os campos do formulário, que têm a mesma estrutura para ambos
+        if (document.getElementById('nome')) document.getElementById('nome').value = dados.pessoa?.nome || "";
+        if (document.getElementById('email')) document.getElementById('email').value = dados.pessoa?.email || "";
+        if (document.getElementById('telefone')) document.getElementById('telefone').value = dados.telefone || "";
+        if (document.getElementById('nascimento')) document.getElementById('nascimento').value = dados.dataNascimento || "";
+
+        // Atualiza clienteId para clientes no localStorage
+        if (nivel === "CLIENTE") {
+            localStorage.setItem("clienteId", dados.idCliente);
+        }
     } catch (e) {
-        document.getElementById('profile-msg').innerText = "Erro ao carregar perfil.";
+        const msgElem = document.getElementById('profile-msg');
+        if (msgElem) msgElem.innerText = "Erro ao carregar perfil.";
     }
 }
 
-
+// Evento de envio do formulário de atualização de perfil
 document.getElementById('profile-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const msg = document.getElementById('profile-msg');
     msg.innerText = "";
 
-    // Só envia o que mudou (pode mandar tudo também, se preferir)
+    const nivel = getUsuarioNivel();
+
+    // Pega valores dos campos do formulário
     const nome = document.getElementById('nome').value;
     const email = document.getElementById('email').value;
     const telefone = document.getElementById('telefone').value;
     const nascimento = document.getElementById('nascimento').value;
 
-    const bodyCliente = {};
     const bodyPessoa = {};
+    const bodyUsuario = {}; // Pode ser cliente ou profissional
 
-    if (telefone && telefone !== (dadosOriginais.telefone || "")) bodyCliente.telefone = telefone;
-    if (nascimento && nascimento !== (dadosOriginais.dataNascimento || "")) bodyCliente.dataNascimento = nascimento;
-
+    // Só preenche se mudou
     if (nome && nome !== (dadosOriginais.pessoa?.nome || "")) bodyPessoa.nome = nome;
     if (email && email !== (dadosOriginais.pessoa?.email || "")) bodyPessoa.email = email;
 
-    // Atualiza CLIENTE (telefone, nascimento)
-    if (Object.keys(bodyCliente).length > 0) {
-        try {
-            const resp = await fetch(`${API_URL}/clientes/${dadosOriginais.idCliente}`, {
+    if (telefone && telefone !== (dadosOriginais.telefone || "")) bodyUsuario.telefone = telefone;
+    if (nascimento && nascimento !== (dadosOriginais.dataNascimento || "")) bodyUsuario.dataNascimento = nascimento;
+
+    try {
+        // Atualiza dados PESSOA
+        if (Object.keys(bodyPessoa).length > 0) {
+            const respPessoa = await fetch(`${API_URL}/pessoa/${dadosOriginais.pessoa.idPessoa}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...bodyCliente })
+                body: JSON.stringify(bodyPessoa)
             });
-            if (!resp.ok) throw new Error();
-        } catch {
-            msg.style.color = "red";
-            msg.innerText = "Erro ao atualizar dados do cliente.";
-            return;
+            if (!respPessoa.ok) throw new Error("Erro ao atualizar dados pessoais");
         }
-    }
-    // Atualiza PESSOA (nome, email)
-    if (Object.keys(bodyPessoa).length > 0) {
-        try {
-            const resp = await fetch(`${API_URL}/pessoa/${dadosOriginais.pessoa.idPessoa}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...bodyPessoa })
-            });
-            if (!resp.ok) throw new Error();
-        } catch {
-            msg.style.color = "red";
-            msg.innerText = "Erro ao atualizar dados pessoais.";
-            return;
+
+        // Atualiza dados CLIENTE ou PROFISSIONAL/ADMIN
+        if (Object.keys(bodyUsuario).length > 0) {
+            let urlUpdate = "";
+            if (nivel === "CLIENTE") {
+                urlUpdate = `${API_URL}/clientes/${dadosOriginais.idCliente}`;
+            } else if (nivel === "PROFISSIONAL" || nivel === "ADMIN") {
+                urlUpdate = `${API_URL}/profissional/${dadosOriginais.idProfissional}`;
+            }
+
+            if (urlUpdate) {
+                const respUsuario = await fetch(urlUpdate, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(bodyUsuario)
+                });
+                if (!respUsuario.ok) throw new Error("Erro ao atualizar dados do usuário");
+            }
         }
+    } catch {
+        msg.style.color = "red";
+        msg.innerText = "Erro ao atualizar perfil.";
+        return;
     }
 
-    // Campos de senha
+    // Troca de senha
     const senhaAtual = document.getElementById('senha-atual').value;
     const novaSenha = document.getElementById('nova-senha').value;
     const confirmaSenha = document.getElementById('confirma-senha').value;
 
-
-    // --- Troca de senha ---
     if (senhaAtual || novaSenha || confirmaSenha) {
         if (!senhaAtual || !novaSenha || !confirmaSenha) {
             msg.style.color = "red";
@@ -116,10 +162,10 @@ document.getElementById('profile-form').addEventListener('submit', async functio
             if (!resp.ok) throw new Error();
             msg.style.color = "green";
             msg.innerText = "Senha alterada com sucesso!";
-            // Limpa campos de senha sempre ao abrir/atualizar o perfil!
-        document.getElementById('senha-atual').value = '';
-        document.getElementById('nova-senha').value = '';
-        document.getElementById('confirma-senha').value = '';
+            // Limpa campos de senha após sucesso
+            document.getElementById('senha-atual').value = '';
+            document.getElementById('nova-senha').value = '';
+            document.getElementById('confirma-senha').value = '';
         } catch {
             msg.style.color = "red";
             msg.innerText = "Erro ao alterar senha. Verifique a senha atual.";
@@ -132,5 +178,5 @@ document.getElementById('profile-form').addEventListener('submit', async functio
     await carregarPerfil();
 });
 
-// Chama ao abrir página:
+// Carrega perfil ao abrir página
 document.addEventListener('DOMContentLoaded', carregarPerfil);

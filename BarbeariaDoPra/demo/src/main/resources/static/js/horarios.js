@@ -1,5 +1,6 @@
 const API_URL = "http://localhost:8080";
 
+// Seletores de elementos da página
 const selectProf = document.getElementById('profissional');
 const selectDia = document.getElementById('dia');
 const inputHoraInicio = document.getElementById('horaInicio');
@@ -7,6 +8,7 @@ const inputHoraFim = document.getElementById('horaFim');
 const formHorario = document.getElementById('form-horario');
 const tbodyHorarios = document.getElementById('horarios-tbody');
 
+// Dicionários para tradução entre Label e Enum do backend
 const diasEnum = {
     "Segunda-feira": "SEGUNDA_FEIRA",
     "Terça-feira": "TERCA_FEIRA",
@@ -26,6 +28,7 @@ const diasLabel = {
     "DOMINGO": "Domingo"
 };
 
+// Carrega a lista de profissionais para o select
 async function carregarProfissionais() {
     const resp = await fetch(`${API_URL}/profissional`);
     const profs = await resp.json();
@@ -34,8 +37,9 @@ async function carregarProfissionais() {
         selectProf.innerHTML += `<option value="${p.idProfissional}">${p.pessoa?.nome ?? p.nome}</option>`;
     });
 }
-carregarProfissionais();
+carregarProfissionais(); // Chama ao iniciar
 
+// Carrega a tabela de horários cadastrados
 async function carregarHorarios() {
     tbodyHorarios.innerHTML = '<tr><td colspan="5">Carregando...</td></tr>';
     try {
@@ -65,9 +69,10 @@ async function carregarHorarios() {
         console.error(e);
     }
 }
-window.carregarHorarios = carregarHorarios;
-carregarHorarios();
+window.carregarHorarios = carregarHorarios; // Disponibiliza no escopo global para reuso em outras funções
+carregarHorarios(); // Chama ao iniciar
 
+// SUBMISSÃO DO FORMULÁRIO DE NOVO HORÁRIO
 formHorario.addEventListener('submit', async function(e) {
     e.preventDefault();
     const profissionalId = selectProf.value;
@@ -75,11 +80,12 @@ formHorario.addEventListener('submit', async function(e) {
     const horaInicio = inputHoraInicio.value;
     const horaFim = inputHoraFim.value;
 
+    // Validação simples
     if (!profissionalId || !diaLabel || !horaInicio || !horaFim) {
         alert('Preencha todos os campos!');
         return;
     }
-    const diaSemana = diasEnum[diaLabel];
+    const diaSemana = diasEnum[diaLabel]; // Converte para Enum
 
     try {
         const resp = await fetch(`${API_URL}/horario`, {
@@ -90,13 +96,13 @@ formHorario.addEventListener('submit', async function(e) {
                 diaSemana: diaSemana,
                 horaInicio: horaInicio,
                 horaFim: horaFim,
-                bloqueado: false
+                bloqueado: false // Por padrão, cadastra desbloqueado
             })
         });
 
         if (resp.ok) {
-            carregarHorarios();
-            formHorario.reset();
+            carregarHorarios(); // Atualiza tabela após cadastro
+            formHorario.reset(); // Limpa o form
         } else {
             alert('Erro ao salvar horário');
         }

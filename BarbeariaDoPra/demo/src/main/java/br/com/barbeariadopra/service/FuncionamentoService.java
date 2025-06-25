@@ -12,12 +12,15 @@ import br.com.barbeariadopra.enums.DiaSemana;
 import br.com.barbeariadopra.repository.FuncionamentoRepository;
 import lombok.RequiredArgsConstructor;
 
+// Serviço responsável pela lógica de negócios relacionada ao funcionamento dos profissionais
 @Service
 @RequiredArgsConstructor
 public class FuncionamentoService {
 
+    // Repositório de acesso ao banco de dados para funcionamento
     private final FuncionamentoRepository funcionamentoRepository;
 
+    // Salva um novo funcionamento. Preenche o campo 'horarioDisponivel' caso venha vazio.
     public FuncionamentoEntity incluir(FuncionamentoEntity funcionamento) {
         // Preencher o campo obrigatório caso venha vazio
         if (funcionamento.getHorarioDisponivel() == null || funcionamento.getHorarioDisponivel().isEmpty()) {
@@ -28,10 +31,12 @@ public class FuncionamentoService {
         return funcionamentoRepository.save(funcionamento);
     }
 
+    // Busca funcionamento pelo ID
     public FuncionamentoEntity buscarPorId(int idFuncionamento) {
         return funcionamentoRepository.findById(idFuncionamento).orElse(null);
     }
 
+    // Edita um funcionamento já existente, atualizando todos os campos
     public FuncionamentoEntity editar(Integer id, FuncionamentoEntity novosDados) {
         FuncionamentoEntity existente = funcionamentoRepository.findById(id).orElse(null);
         if (existente != null) {
@@ -39,6 +44,7 @@ public class FuncionamentoService {
             existente.setProfissional(novosDados.getProfissional());
             existente.setHoraInicio(novosDados.getHoraInicio());
             existente.setHoraFim(novosDados.getHoraFim());
+            // Atualiza ou calcula o campo 'horarioDisponivel'
             if (novosDados.getHorarioDisponivel() == null || novosDados.getHorarioDisponivel().isEmpty()) {
                 existente.setHorarioDisponivel(
                     novosDados.getHoraInicio() + " - " + novosDados.getHoraFim()
@@ -51,15 +57,17 @@ public class FuncionamentoService {
         return null;
     }
 
+    // Lista todos os funcionamentos cadastrados
     public List<FuncionamentoEntity> listarTodos() {
         return funcionamentoRepository.findAll();
     }
 
+    // Exclui um funcionamento pelo ID
     public void excluir(Integer idFuncionamento) {
         funcionamentoRepository.deleteById(idFuncionamento);
     }
 
-    // Busca TODOS os dias de funcionamento de um profissional
+    // Busca todos os dias da semana em que um profissional está disponível
     public List<DiaSemana> diasDisponiveisPorProfissional(Integer idProfissional) {
         return funcionamentoRepository.findByProfissional_IdProfissional(idProfissional)
                 .stream()
@@ -68,7 +76,7 @@ public class FuncionamentoService {
                 .collect(Collectors.toList());
     }
 
-    // Busca todos os funcionamentos (faixas de horários) para o profissional num dia específico
+    // Busca todos os funcionamentos (faixas de horários) para um profissional num dia da semana específico
     public List<FuncionamentoEntity> horariosDisponiveisPorProfissionalEDia(Integer idProfissional, DiaSemana diaSemana) {
         return funcionamentoRepository.findByProfissional_IdProfissionalAndDiaSemana(idProfissional, diaSemana);
     }
@@ -76,7 +84,8 @@ public class FuncionamentoService {
     // ==============================
     // MÉTODO PARA O FLUXO DO AGENDAMENTO
     // ==============================
-    // Busca funcionamento do profissional para o dia da semana (usado pelo endpoint do agendamento)
+
+    // Busca funcionamento de um profissional para determinado dia da semana (usado pelo endpoint de agendamento)
     public Optional<FuncionamentoEntity> buscarPorProfissionalEDiaSemana(Integer profissionalId, DayOfWeek dayOfWeek) {
         String enumDia = diaSemanaToEnum(dayOfWeek);
         return funcionamentoRepository.findByProfissional_IdProfissional(profissionalId)
@@ -85,7 +94,7 @@ public class FuncionamentoService {
                 .findFirst();
     }
 
-    // Traduz DayOfWeek do Java para seu Enum de DiaSemana
+    // Converte DayOfWeek do Java para o enum DiaSemana utilizado no sistema
     private String diaSemanaToEnum(DayOfWeek dayOfWeek) {
         switch(dayOfWeek) {
             case MONDAY:    return "SEGUNDA_FEIRA";

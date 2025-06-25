@@ -7,15 +7,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Cabeçalho com nome da barbearia e botão de sair -->
     <header>
         <h1>Barbearia Estilo Clássico</h1>
         <a href="index.html" class="logout">Sair</a>
     </header>
     <div class="recuperar-container">
+        <!-- Logo da barbearia -->
         <img src="img/logotipo-da-barbearia.jpg" alt="Logo Barbearia" class="logo">
         <h1>Recuperar Senha</h1>
+        <!-- Instruções para o usuário -->
         <p>Digite seu e-mail cadastrado para receber instruções de recuperação de senha</p>
 
+        <!-- Formulário para recuperar senha -->
         <form id="recoveryForm">
             <div class="input-group">
                 <label for="email">E-mail</label>
@@ -23,8 +27,10 @@
             </div>
             <button type="submit" class="btn-recuperar">Enviar instruções</button>
         </form>
+        <!-- Mensagens de sucesso ou erro aparecem aqui -->
         <div id="recovery-msg" style="text-align:center; margin-top:10px;"></div>
     </div>
+    <!-- Script JS responsável pelo envio do formulário -->
     <script src="js/recuperar.js"></script>
 </body>
 </html>

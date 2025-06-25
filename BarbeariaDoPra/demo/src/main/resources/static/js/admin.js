@@ -1,24 +1,22 @@
 const API_URL = "http://localhost:8080";
 
-
+// Carrega nome do usuário e opções de horário assim que a página é carregada
 document.addEventListener('DOMContentLoaded', function () {
     const nome = localStorage.getItem('usuarioNome') || 'Usuário';
     document.getElementById('nome-usuario').textContent = nome;
     gerarOpcoesHorario24h("filtroHoraInicio");
 });
 
-
-
-
 // ---- AGENDAMENTOS ----
+
+// Função principal para listar agendamentos filtrando por cliente, data e status
 async function listarAgendamentos() {
-    // Filtros:
+    // Captura os filtros da tela
     const nomeCliente = document.getElementById('filtroCliente')?.value.trim() ?? '';
     const data = document.getElementById('filtroData')?.value ?? '';
     const status = document.getElementById('filtroStatus')?.value ?? '';
-    
 
-    // Monta query string (ajuste se seu backend aceitar, senão só usa GET puro)
+    // Monta a query string para GET (filtros)
     let query = [];
     if (nomeCliente) query.push(`cliente=${encodeURIComponent(nomeCliente)}`);
     if (data) query.push(`data=${encodeURIComponent(data)}`);
@@ -26,12 +24,14 @@ async function listarAgendamentos() {
     let url = `${API_URL}/agendamentos`;
     if (query.length) url += "?" + query.join("&");
 
+    // Chama a API e renderiza os dados na tabela
     const resp = await fetch(url);
     const dados = await resp.json();
     const tbody = document.getElementById('tbody-agendamentos');
     if (!tbody) return;
     tbody.innerHTML = '';
 
+    // Monta cada linha da tabela de agendamentos
     dados.forEach(item => {
         tbody.innerHTML += `
             <tr>
@@ -52,30 +52,28 @@ async function listarAgendamentos() {
 }
 window.listarAgendamentos = listarAgendamentos;
 
-// Filtro de agendamentos
+// Botão para aplicar filtros de agendamento
 document.getElementById('btnFiltrarAgendamentos').onclick = function() {
     listarAgendamentos();
 };
 
-// Atualizar status (Aceitar/Recusar)
+// Atualiza o status de um agendamento (CONFIRMADO ou RECUSADO)
 window.atualizarStatusAgendamento = async function(idAgendamento, novoStatus, btn) {
     try {
-        // Busca o agendamento completo
+        // Busca os dados completos do agendamento
         const resBusca = await fetch(`${API_URL}/agendamentos/${idAgendamento}`);
         if (!resBusca.ok) return alert('Erro ao buscar agendamento!');
         let agendamento = await resBusca.json();
 
-        // Atualiza o status
+        // Atualiza o status e envia ao backend via PUT
         agendamento.status = novoStatus;
-
-        // Atualiza via PUT
         const res = await fetch(`${API_URL}/agendamentos/${idAgendamento}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(agendamento)
         });
         if (res.ok) {
-            // Atualiza status na tabela sem recarregar
+            // Atualiza na tela sem recarregar tudo
             const tr = btn.closest('tr');
             const tdStatus = tr.querySelector('td[class^="status-"]');
             tdStatus.textContent = novoStatus;
@@ -88,7 +86,7 @@ window.atualizarStatusAgendamento = async function(idAgendamento, novoStatus, bt
     }
 };
 
-// Modal detalhes agendamento
+// Exibe o modal de detalhes de um agendamento selecionado
 function mostrarDetalhesAgendamento(elemento) {
     const linha = elemento.closest('tr');
     const tds = linha.getElementsByTagName('td');
@@ -102,12 +100,14 @@ function mostrarDetalhesAgendamento(elemento) {
 }
 window.mostrarDetalhesAgendamento = mostrarDetalhesAgendamento;
 
+// Fecha o modal de detalhes do agendamento
 function fecharDetalhes() {
     document.getElementById('detalhes-agendamento').style.display = 'none';
 }
 window.fecharDetalhes = fecharDetalhes;
 
 // ---- CLIENTES ----
+// Função para listar clientes com filtros por nome, email e telefone
 async function listarClientes() {
     const nome = document.getElementById('filtroNomeCliente')?.value?.trim() ?? '';
     const email = document.getElementById('filtroEmailCliente')?.value?.trim() ?? '';
@@ -119,6 +119,7 @@ async function listarClientes() {
     if (telefone) params.push(`telefone=${encodeURIComponent(telefone)}`);
     if (params.length) url += `?${params.join('&')}`;
 
+    // Faz a requisição para a API e monta a tabela com os dados retornados
     const resp = await fetch(url);
     const dados = await resp.json();
     const tbody = document.getElementById('tbody-clientes');
@@ -142,10 +143,11 @@ async function listarClientes() {
 }
 window.listarClientes = listarClientes;
 
-// Botão filtrar
+// Botão para filtrar clientes
 document.getElementById('btnFiltrarClientes').onclick = listarClientes;
 
 // -- MODAL EDIÇÃO CLIENTE --
+// Função para abrir o modal de edição de cliente e preencher os campos com os dados
 window.abrirModalEditarCliente = async function(idCliente) {
     const resp = await fetch(`${API_URL}/clientes/${idCliente}`);
     if (!resp.ok) return alert("Erro ao buscar cliente.");
@@ -160,12 +162,14 @@ window.abrirModalEditarCliente = async function(idCliente) {
     document.getElementById('modal-editar-cliente').style.display = 'flex';
 }
 
+// Fecha o modal e limpa o formulário de edição do cliente
 window.fecharModalEditarCliente = function() {
     document.getElementById('modal-editar-cliente').style.display = 'none';
     document.getElementById('form-editar-cliente').reset();
 }
 
 // -- ENVIO FORMULÁRIO EDIÇÃO --
+// Ao enviar o formulário de edição, faz PUT na API e atualiza a lista
 document.getElementById('form-editar-cliente').onsubmit = async function(e) {
     e.preventDefault();
     const id = document.getElementById('edit-idCliente').value;
@@ -174,7 +178,7 @@ document.getElementById('form-editar-cliente').onsubmit = async function(e) {
     const telefone = document.getElementById('edit-telefoneCliente').value.trim();
     const dataNascimento = document.getElementById('edit-nascCliente').value;
 
-    // Buscar estrutura completa do cliente
+    // Buscar estrutura completa do cliente para editar apenas o necessário
     const resp = await fetch(`${API_URL}/clientes/${id}`);
     if (!resp.ok) return alert("Erro ao buscar cliente.");
     let cliente = await resp.json();
@@ -200,6 +204,7 @@ document.getElementById('form-editar-cliente').onsubmit = async function(e) {
 };
 
 // -- REMOVER CLIENTE --
+// Função para remover cliente. Mostra um confirm e faz DELETE na API
 window.removerCliente = async function(id) {
     if (!confirm("Deseja remover este cliente?")) return;
     try {
@@ -216,6 +221,7 @@ window.removerCliente = async function(id) {
 }
 
 // ---- PROFISSIONAIS (TABELA) ----
+// Função para listar profissionais com filtros por nome, email e telefone
 async function listarProfissionais() {
     const nome = document.getElementById('filtroNomeProf')?.value?.trim() ?? '';
     const email = document.getElementById('filtroEmailProf')?.value?.trim() ?? '';
@@ -227,6 +233,7 @@ async function listarProfissionais() {
     if (telefone) params.push(`telefone=${encodeURIComponent(telefone)}`);
     if (params.length) url += `?${params.join('&')}`;
 
+    // Faz a requisição e monta a tabela
     const resp = await fetch(url);
     const dados = await resp.json();
     const tbody = document.getElementById('tbody-profissionais');
@@ -250,10 +257,11 @@ async function listarProfissionais() {
 }
 window.listarProfissionais = listarProfissionais;
 
-// Botão filtrar
+// Botão para filtrar profissionais
 document.getElementById('btnFiltrarProfissionais').onclick = listarProfissionais;
 
 // ---- PROFISSIONAIS (SELECT) ----
+// Preenche o select de profissionais para formulários/combos
 async function preencherProfissionais() {
     const select = document.getElementById('profissional');
     if (!select) return; // Só executa se existir select na página
@@ -267,6 +275,7 @@ async function preencherProfissionais() {
 window.preencherProfissionais = preencherProfissionais;
 
 // ---- HORÁRIOS ----
+// Lista horários cadastrados, filtrando por profissional, dia, status, hora de início e fim
 async function listarHorarios() {
     const profissional = document.getElementById('filtroProfissionalHorario')?.value.trim() ?? '';
     const dia = document.getElementById('filtroDiaHorario')?.value.trim() ?? '';
@@ -285,12 +294,14 @@ async function listarHorarios() {
     let url = `${API_URL}/horario`;
     if (query.length) url += "?" + query.join("&");
 
+    // Busca horários e preenche a tabela
     const resp = await fetch(url);
     const dados = await resp.json();
     const tbody = document.getElementById('tbody-horarios');
     if (!tbody) return;
     tbody.innerHTML = '';
 
+    // Monta cada linha, já com botão de bloquear/desbloquear
     dados.forEach(item => {
         const bloqueado = !!item.bloqueado;
         let statusLabel = bloqueado ? 'Bloqueado' : 'Disponível';
@@ -316,36 +327,35 @@ async function listarHorarios() {
 }
 window.listarHorarios = listarHorarios;
 
+
+// Gera opções de horários no formato 24h para um <select>
+// Permite também adicionar horários "extras" caso existam horários fora do padrão
 function gerarOpcoesHorario24h(selectId, horariosExtras = []) {
     const select = document.getElementById(selectId);
     if (!select) return;
     select.innerHTML = `<option value="">Início</option>`;
     let horariosSet = new Set();
 
-    // Gera horários de 00:00 até 23:30 de 30 em 30min
+    // Gera horários de 00:00 até 23:30, de 30 em 30min
     for (let h = 0; h < 24; h++) {
         for (let m = 0; m < 60; m += 30) {
             horariosSet.add(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`);
         }
     }
 
-    // Adiciona horários extras (caso tenham sido cadastrados fora do padrão)
+    // Adiciona horários extras, se existirem
     horariosExtras.forEach(h => horariosSet.add(h));
 
     // Ordena horários
     let horariosOrdenados = Array.from(horariosSet).sort();
 
-    // Monta as opções
+    // Preenche o <select> com as opções
     horariosOrdenados.forEach(val => {
         select.innerHTML += `<option value="${val}">${val}</option>`;
     });
 }
 
- 
- 
-
-
-// Função para bloquear/desbloquear
+// Função para bloquear ou desbloquear um horário
 window.toggleBloqueioHorario = async function(idHorario, bloqueado) {
     let endpoint = bloqueado ? 'desbloquear' : 'bloquear';
     try {
@@ -361,6 +371,7 @@ window.toggleBloqueioHorario = async function(idHorario, bloqueado) {
     }
 };
 
+// Exibe modal com detalhes do horário selecionado na tabela
 function mostrarDetalhesHorario(elemento) {
     const linha = elemento.closest('tr');
     const tds = linha.getElementsByTagName('td');
@@ -373,6 +384,7 @@ function mostrarDetalhesHorario(elemento) {
 }
 window.mostrarDetalhesHorario = mostrarDetalhesHorario;
 
+// Fecha o modal de detalhes do horário
 function fecharModalDetalhesHorario() {
     document.getElementById('modal-detalhes-horario').style.display = 'none';
     document.body.classList.remove('modal-aberto');
@@ -380,7 +392,8 @@ function fecharModalDetalhesHorario() {
 window.fecharModalDetalhesHorario = fecharModalDetalhesHorario;
 
 // ---- ABAS ----
-// --- PERSISTÊNCIA DE ABA ATIVA E RELOAD DINÂMICO ---
+// Função para alternar entre abas no sistema administrativo
+// Persiste a aba ativa no localStorage e executa a listagem correspondente
 window.openTab = function(tabId) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -392,10 +405,10 @@ window.openTab = function(tabId) {
         }
     });
 
-    // Persistência
+    // Salva a aba ativa no localStorage
     localStorage.setItem('adminAbaAtiva', tabId);
 
-    // Carrega lista da aba
+    // Executa listagem ao abrir aba
     if (tabId === 'agendamentos') listarAgendamentos();
     if (tabId === 'clientes') listarClientes();
     if (tabId === 'profissionais') listarProfissionais();
@@ -408,17 +421,16 @@ window.openTab = function(tabId) {
 };
 
 // ---- INICIALIZAÇÃO ----
+// Ao carregar o DOM, restaura a última aba aberta e preenche selects de profissionais
 document.addEventListener('DOMContentLoaded', () => {
-    // Pega última aba aberta
     const abaSalva = localStorage.getItem('adminAbaAtiva') || 'agendamentos';
     openTab(abaSalva);
-    preencherProfissionais(); // Se existir select na tela, preenche!
+    preencherProfissionais(); // Preenche select se existir
 });
 
 // ---- FUNCIONAMENTO ----
-// ... (mantém todo seu código daqui pra baixo igual!)
 
-// ---- FUNCIONAMENTO ----
+// Lista todos os funcionamentos cadastrados e preenche a tabela
 async function listarFuncionamentos() {
     const tbody = document.getElementById('funcionamento-tbody');
     if (!tbody) return;
@@ -446,8 +458,9 @@ async function listarFuncionamentos() {
 }
 window.listarFuncionamentos = listarFuncionamentos;
 
+// Chama endpoint para gerar horários automáticos a partir do funcionamento
 window.gerarHorariosFuncionamento = async function(idFuncionamento) {
-    const intervalo = 30; // SEMPRE 30 minutos por padrão!
+    const intervalo = 30; // Sempre gera de 30 em 30 minutos
     if (!idFuncionamento) {
         alert("ID de funcionamento inválido!");
         return;
@@ -469,6 +482,7 @@ window.gerarHorariosFuncionamento = async function(idFuncionamento) {
     }
 };
 
+// Preenche o select de profissionais na tela de funcionamento
 async function preencherProfissionaisFuncionamento() {
     const select = document.getElementById('profissional');
     if (!select) return;
@@ -481,7 +495,7 @@ async function preencherProfissionaisFuncionamento() {
 }
 window.preencherProfissionaisFuncionamento = preencherProfissionaisFuncionamento;
 
-// Cadastro de funcionamento
+// Cadastro de funcionamento: envia dados para a API e atualiza a lista ao cadastrar
 const formFunc = document.getElementById('form-funcionamento');
 if (formFunc) {
     formFunc.onsubmit = async function(e) {
@@ -512,7 +526,7 @@ if (formFunc) {
     }
 }
 
-// Modal de exclusão
+// Controle do modal de exclusão de funcionamento
 let idFuncExcluir = null;
 window.abrirModalExcluirFuncionamento = function(id) {
     idFuncExcluir = id;
@@ -530,6 +544,7 @@ if (btnConfirmaExcluir) {
     };
 }
 
+// Exibe um alerta temporário na tela
 function exibirMensagem(msg, sucesso) {
     const alerta = document.getElementById('alerta');
     if (alerta) {
@@ -540,20 +555,19 @@ function exibirMensagem(msg, sucesso) {
     }
 }
 
-// Inicialização funcionamento
+// Inicialização extra para garantir carregamento das opções de funcionamento caso necessário
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('funcionamento')) {
         preencherProfissionaisFuncionamento();
         listarFuncionamentos();
     }
-
-    
 });
+
 // ---- SERVIÇOS ----
 
-let modoEdicaoServico = null; // id do serviço em edição
+let modoEdicaoServico = null; // Guarda o ID do serviço que está sendo editado (se for o caso)
 
-// Listar serviços (com filtro)
+// Listar serviços (com filtro por nome)
 async function listarServicos() {
     const nome = document.getElementById('filtroNomeServico')?.value?.trim() ?? '';
     let url = `${API_URL}/servicos`;
@@ -563,6 +577,7 @@ async function listarServicos() {
     const tbody = document.getElementById('tbody-servicos');
     if (!tbody) return;
     tbody.innerHTML = '';
+    // Monta as linhas da tabela de serviços
     dados.forEach(item => {
         tbody.innerHTML += `
             <tr>
@@ -579,21 +594,21 @@ async function listarServicos() {
 }
 window.listarServicos = listarServicos;
 
-// Cadastrar ou editar serviço
+// Cadastrar ou editar um serviço
 const formServico = document.getElementById('form-servico');
 if (formServico) {
     formServico.onsubmit = async function(e) {
         e.preventDefault();
         const nome = document.getElementById('nome-servico').value.trim();
         const valor = parseFloat(document.getElementById('valor-servico').value);
-        if (!nome || isNaN(valor)) return;
+        if (!nome || isNaN(valor)) return; // Validação simples
 
         let url = `${API_URL}/servicos`;
         let method = 'POST';
         let okMsg = 'Serviço cadastrado!';
         let body = { nome, valor };
 
-        // Se estiver em edição
+        // Se estiver editando um serviço, muda para PUT
         if (modoEdicaoServico) {
             url += `/${modoEdicaoServico}`;
             method = 'PUT';
@@ -621,7 +636,7 @@ if (formServico) {
     }
 }
 
-// Editar serviço (preenche o formulário)
+// Preenche o formulário com os dados do serviço que está sendo editado
 window.editarServico = function(id, nome, valor) {
     document.getElementById('nome-servico').value = nome;
     document.getElementById('valor-servico').value = valor;
@@ -629,14 +644,14 @@ window.editarServico = function(id, nome, valor) {
     document.getElementById('btn-cancelar-edicao-servico').style.display = 'inline-block';
 };
 
-// Cancelar edição serviço
+// Cancela o modo edição do serviço e limpa o formulário
 document.getElementById('btn-cancelar-edicao-servico').onclick = function() {
     modoEdicaoServico = null;
     formServico.reset();
     this.style.display = 'none';
 };
 
-// Remover serviço
+// Remove um serviço pelo ID
 window.removerServico = async function(id) {
     if (!confirm("Deseja remover este serviço?")) return;
     try {
@@ -652,24 +667,23 @@ window.removerServico = async function(id) {
     }
 };
 
-// Filtro de serviços
+// Botão para filtrar serviços na lista
 document.getElementById('btnFiltrarServicos').onclick = function() {
     listarServicos();
 };
 
-// Inicialização dos serviços (quando a aba for aberta)
+// Garante que sempre que a aba de serviços for aberta, a lista será atualizada
 document.querySelector('[onclick*="openTab(\'servicos\')"]')?.addEventListener('click', listarServicos);
 
 
 // --- EDIÇÃO DE PROFISSIONAL ---
 
+// Abre o modal de edição de profissional e preenche os campos com os dados do profissional selecionado
 window.abrirModalEditarProf = async function(idProfissional) {
-    // Buscar os dados do profissional pelo ID
     const resp = await fetch(`${API_URL}/profissional/${idProfissional}`);
     if (!resp.ok) return alert("Erro ao buscar profissional.");
     const p = await resp.json();
 
-    // Preencher o modal com os dados
     document.getElementById('edit-idProfissional').value = p.idProfissional;
     document.getElementById('edit-nomeProf').value = p.pessoa?.nome ?? '';
     document.getElementById('edit-emailProf').value = p.pessoa?.email ?? '';
@@ -679,12 +693,13 @@ window.abrirModalEditarProf = async function(idProfissional) {
     document.getElementById('modal-editar-prof').style.display = 'flex';
 }
 
+// Fecha o modal de edição de profissional
 window.fecharModalEditarProf = function() {
     document.getElementById('modal-editar-prof').style.display = 'none';
     document.getElementById('form-editar-prof').reset();
 }
 
-// Envio do formulário de edição
+// Envia os dados do formulário de edição do profissional para a API
 document.getElementById('form-editar-prof').onsubmit = async function(e) {
     e.preventDefault();
     const id = document.getElementById('edit-idProfissional').value;
@@ -693,7 +708,7 @@ document.getElementById('form-editar-prof').onsubmit = async function(e) {
     const telefone = document.getElementById('edit-telefoneProf').value.trim();
     const dataNascimento = document.getElementById('edit-nascProf').value;
 
-    // Buscar o profissional para pegar toda estrutura do objeto
+    // Busca o profissional para pegar toda a estrutura (evita sobrescrever campos vazios)
     const resp = await fetch(`${API_URL}/profissional/${id}`);
     if (!resp.ok) return alert("Erro ao buscar profissional.");
 
@@ -704,7 +719,7 @@ document.getElementById('form-editar-prof').onsubmit = async function(e) {
     prof.telefone = telefone;
     prof.dataNascimento = dataNascimento;
 
-    // Enviar PUT para atualizar
+    // Atualiza via PUT
     const resp2 = await fetch(`${API_URL}/profissional/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -722,6 +737,8 @@ document.getElementById('form-editar-prof').onsubmit = async function(e) {
 
 
 // -- LISTA E BOTÕES DE CLIENTES --
+
+// Lista clientes com filtros por nome, e-mail e telefone
 async function listarClientes() {
     const nome = document.getElementById('filtroNomeCliente')?.value?.trim() ?? '';
     const email = document.getElementById('filtroEmailCliente')?.value?.trim() ?? '';
@@ -738,6 +755,7 @@ async function listarClientes() {
     const tbody = document.getElementById('tbody-clientes');
     if (!tbody) return;
     tbody.innerHTML = '';
+    // Monta a tabela de clientes
     dados.forEach(item => {
         tbody.innerHTML += `
             <tr>
@@ -756,10 +774,12 @@ async function listarClientes() {
 }
 window.listarClientes = listarClientes;
 
-// Botão filtrar clientes
+// Botão para filtrar clientes
 document.getElementById('btnFiltrarClientes').onclick = listarClientes;
 
-// -- MODAL EDIÇÃO CLIENTE --
+// --- MODAL EDIÇÃO CLIENTE ---
+
+// Abre o modal de edição e preenche os campos com os dados do cliente
 window.abrirModalEditarCliente = async function(idCliente) {
     const resp = await fetch(`${API_URL}/clientes/${idCliente}`);
     if (!resp.ok) return alert("Erro ao buscar cliente.");
@@ -774,12 +794,13 @@ window.abrirModalEditarCliente = async function(idCliente) {
     document.getElementById('modal-editar-cliente').style.display = 'flex';
 }
 
+// Fecha o modal de edição de cliente
 window.fecharModalEditarCliente = function() {
     document.getElementById('modal-editar-cliente').style.display = 'none';
     document.getElementById('form-editar-cliente').reset();
 }
 
-// -- ENVIO FORMULÁRIO EDIÇÃO --
+// Envia o formulário de edição de cliente para a API
 document.getElementById('form-editar-cliente').onsubmit = async function(e) {
     e.preventDefault();
     const id = document.getElementById('edit-idCliente').value;
@@ -788,7 +809,7 @@ document.getElementById('form-editar-cliente').onsubmit = async function(e) {
     const telefone = document.getElementById('edit-telefoneCliente').value.trim();
     const dataNascimento = document.getElementById('edit-nascCliente').value;
 
-    // Buscar estrutura completa do cliente
+    // Busca toda a estrutura do cliente (para não perder campos que não estão no form)
     const resp = await fetch(`${API_URL}/clientes/${id}`);
     if (!resp.ok) return alert("Erro ao buscar cliente.");
     let cliente = await resp.json();
@@ -813,7 +834,7 @@ document.getElementById('form-editar-cliente').onsubmit = async function(e) {
     }
 };
 
-// -- REMOVER CLIENTE --
+// Remove cliente pelo ID, com confirmação
 window.removerCliente = async function(id) {
     if (!confirm("Deseja remover este cliente?")) return;
     try {

@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <!-- Configurações básicas de codificação e responsividade -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barbearia - Cadastro</title>
+    <!-- Importa o CSS principal da página -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Container principal do formulário de cadastro -->
     <div class="cadastro-container">
+        <!-- Logotipo da barbearia -->
         <img src="img/logotipo-da-barbearia.jpg" alt="Logo Barbearia" class="logo">
         <h1>Crie sua conta</h1>
         
+        <!-- Formulário de cadastro de usuário -->
         <form id="form-cadastro">
+            <!-- Grupo para nome e sobrenome em linha -->
             <div class="campo-nomes">
                 <div class="input-group">
                     <label for="primeiro-nome">Nome</label>
@@ -22,19 +28,22 @@
                     <input type="text" id="ultimo-nome" name="ultimo-nome" required>
                 </div>
             </div>
+            <!-- Email do usuário -->
             <div class="input-group">
                 <label for="email">E-mail</label>
                 <input type="email" id="email" name="email" required>
             </div>
+            <!-- Telefone para contato -->
             <div class="input-group">
                 <label for="telefone">Telefone</label>
                 <input type="tel" id="telefone" name="telefone" required>
             </div>
+            <!-- Data de nascimento do usuário -->
             <div class="input-group">
                 <label for="data-nascimento">Data de Nascimento</label>
                 <input type="date" id="data-nascimento" name="data-nascimento" required>
             </div>
-            <!-- CAMPO TIPO DE CONTA REMOVIDO -->
+            <!-- Campos de senha -->
             <div class="input-group">
                 <label for="password">Senha</label>
                 <input type="password" id="password" name="password" required>
@@ -43,14 +52,18 @@
                 <label for="confirmar-password">Confirme sua senha</label>
                 <input type="password" id="confirmar-password" name="confirmar-password" required>
             </div>
+            <!-- Botão de envio do formulário -->
             <button type="submit">Cadastrar</button>
         </form>
         
+        <!-- Link para a página de login caso já tenha cadastro -->
         <div class="links">
             Já tem uma conta? <a href="login.html">Faça login</a>
         </div>
+        <!-- Div para mensagens de feedback do JS (sucesso/erro) -->
         <div id="msg-cadastro" style="margin-top:10px;"></div>
     </div>
+    <!-- Importação do JS de cadastro -->
     <script src="js/cadastro.js"></script>
 </body>
 </html>

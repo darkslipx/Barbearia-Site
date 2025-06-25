@@ -1,5 +1,5 @@
 const API_URL = "http://localhost:8080";
-const CLIENTE_ID = localStorage.getItem('clienteId') || 1;
+const CLIENTE_ID = localStorage.getItem('clienteId') || 1; // Busca o id do cliente no localStorage
 
 const selectProf = document.getElementById('profissional');
 const dateInput = document.getElementById('date');
@@ -12,8 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('nome-usuario-header').textContent = nome;
 });
 
+// ================= PROFISSIONAIS =================
 
-// Carrega profissionais ao abrir a página
+// Carrega a lista de profissionais ao abrir a página
 async function carregarProfissionais() {
     selectProf.innerHTML = '<option value="">Carregando...</option>';
     try {
@@ -51,6 +52,8 @@ selectProf.addEventListener('change', async function () {
     }
 });
 
+// ================= CALENDÁRIO E HORÁRIOS =================
+
 // Limita datas do calendário conforme dias disponíveis do Funcionamento
 async function limitarDiasDisponiveisCalendario() {
     const profId = selectProf.value;
@@ -68,7 +71,7 @@ async function limitarDiasDisponiveisCalendario() {
             dateInput._flatpickr.destroy();
         }
 
-        // Inicializa o Flatpickr
+        // Inicializa o Flatpickr - só deixa selecionar os dias retornados pelo backend
         flatpickr("#date", {
             locale: "pt",
             dateFormat: "Y-m-d",
@@ -102,8 +105,7 @@ async function limitarDiasDisponiveisCalendario() {
     }
 }
 
-
-// Carrega horários disponíveis para o dia/profissional
+// Carrega horários disponíveis para o dia/profissional selecionado
 async function carregarHorariosDisponiveis() {
     const profId = selectProf.value;
     const dataSelecionada = dateInput.value;
@@ -129,14 +131,18 @@ async function carregarHorariosDisponiveis() {
     }
 }
 
-// Submete o agendamento
+// ================= AGENDAMENTO =================
+
+// Submete o agendamento do cliente
 document.getElementById('form-agendamento').onsubmit = async function(e) {
     e.preventDefault();
     const profissionalId = selectProf.value;
     const horario = selectHorario.value;
     const servicoId = Number(document.getElementById('servico').value);
     const data = dateInput.value;
-    if (!profissionalId || !horario || !data) {
+
+    // Corrigido: servico deve ser um objeto { idServico: servicoId }
+    if (!profissionalId || !horario || !data || !servicoId) {
         msgDiv.innerHTML = `<span style="color:#c62828;">Preencha todos os campos!</span>`;
         return;
     }
@@ -150,7 +156,7 @@ document.getElementById('form-agendamento').onsubmit = async function(e) {
                 horario: { idHorario: Number(horario) }, // Corrigido para enviar o ID
                 status: 'PENDENTE',
                 data: data,
-                servico: servico
+                servico: { idServico: servicoId } // ENVIE UM OBJETO
             })
         });
         if (resp.ok) {
@@ -168,9 +174,11 @@ document.getElementById('form-agendamento').onsubmit = async function(e) {
     }
 };
 
-// Carrega agendamentos do cliente, agora com botão Cancelar
+// =============== AGENDAMENTOS DO CLIENTE ===============
+
+// Carrega agendamentos do cliente logado
 async function carregarAgendamentosCliente() {
-    const clienteId = localStorage.getItem('usuarioId') || CLIENTE_ID;
+    const clienteId = localStorage.getItem('clienteId') || CLIENTE_ID;
     const tbody = document.getElementById('tbody-agendamentos');
     tbody.innerHTML = '<tr><td colspan="6">Carregando...</td></tr>';
     try {
@@ -236,4 +244,3 @@ async function carregarAgendamentosCliente() {
 
 // Carrega ao abrir a página:
 document.addEventListener('DOMContentLoaded', carregarAgendamentosCliente);
-

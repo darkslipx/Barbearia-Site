@@ -7,10 +7,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Container centralizado de login -->
     <div class="login-container">
+        <!-- Logotipo da barbearia -->
         <img src="img/logotipo-da-barbearia.jpg" alt="Logo Barbearia" class="logo">
+
+        <!-- Título do formulário -->
         <h1>Faça seu login</h1>
+
+        <!-- Mensagem de erro/sucesso (preenchida pelo JS) -->
         <div id="login-msg" style="color:red; text-align:center; margin-bottom:10px;"></div>
+        
+        <!-- Formulário de login -->
         <form id="login-form">
             <div class="input-group">
                 <label for="email">E-mail</label>
@@ -22,11 +30,15 @@
             </div>
             <button type="submit">Entrar</button>
         </form>
+
+        <!-- Links úteis: recuperação de senha e cadastro -->
         <div class="links">
             <a href="recuperar.html">Esqueci minha senha</a> | 
             <a href="cadastro.html">Cadastrar-se</a>
         </div>
     </div>
+    
+    <!-- Script de autenticação/login -->
     <script src="js/login.js"></script>
 </body>
 </html>

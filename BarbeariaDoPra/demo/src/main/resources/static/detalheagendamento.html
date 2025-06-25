@@ -1,12 +1,23 @@
+<!-- Modal de Detalhes do Agendamento
+     - Exibe informações completas sobre um agendamento ao clicar em "Detalhes"
+     - Inicialmente oculto com style="display: none;"
+-->
 <div class="modal-bg" id="modal-detalhes" style="display: none;">
     <div class="modal">
         <h3>Detalhes do Agendamento</h3>
+        <!-- Nome do cliente -->
         <p><strong>Cliente:</strong> <span id="detalhe-cliente"></span></p>
+        <!-- Nome do profissional -->
         <p><strong>Profissional:</strong> <span id="detalhe-profissional"></span></p>
+        <!-- Data agendada -->
         <p><strong>Data:</strong> <span id="detalhe-data"></span></p>
+        <!-- Horário escolhido -->
         <p><strong>Horário:</strong> <span id="detalhe-horario"></span></p>
+        <!-- Tipo de serviço selecionado -->
         <p><strong>Serviço:</strong> <span id="detalhe-servico"></span></p>
+        <!-- Status do agendamento (Pendente, Confirmado etc.) -->
         <p><strong>Status:</strong> <span id="detalhe-status"></span></p>
+        <!-- Botão para fechar o modal -->
         <button class="btn" onclick="fecharModalDetalhes()">Fechar</button>
     </div>
 </div>

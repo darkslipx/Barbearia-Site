@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <!-- Configurações de codificação e responsividade -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barbearia - Cadastro de Profissional</title>
+    <!-- CSS principal da aplicação -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<!-- Cabeçalho da página com menu de perfil -->
 <header>
     <h1>Cadastro de Profissional</h1>
     <div class="user-profile">
@@ -19,11 +22,16 @@
         </div>
     </div>
 </header>
+
+<!-- Container principal do cadastro -->
 <div class="cadastro-container">
+    <!-- Logotipo da barbearia -->
     <img src="img/logotipo-da-barbearia.jpg" alt="Logo Barbearia" class="logo">
     <h1>Crie sua conta</h1>
     
+    <!-- Formulário de cadastro de profissional -->
     <form id="form-cadastro-admin">
+        <!-- Nome e sobrenome lado a lado -->
         <div class="campo-nomes">
             <div class="input-group">
                 <label for="primeiro-nome">Nome</label>
@@ -34,19 +42,22 @@
                 <input type="text" id="ultimo-nome" name="ultimo-nome" required>
             </div>
         </div>
+        <!-- E-mail do profissional -->
         <div class="input-group">
             <label for="email">E-mail</label>
             <input type="email" id="email" name="email" required>
         </div>
+        <!-- Telefone para contato -->
         <div class="input-group">
             <label for="telefone">Telefone</label>
             <input type="tel" id="telefone" name="telefone" required>
         </div>
+        <!-- Data de nascimento do profissional -->
         <div class="input-group">
             <label for="data-nascimento">Data de Nascimento</label>
             <input type="date" id="data-nascimento" name="data-nascimento" required>
         </div>
-        <!-- Removido o select de nivel! -->
+        <!-- Campos de senha -->
         <div class="input-group">
             <label for="password">Senha</label>
             <input type="password" id="password" name="password" required>
@@ -55,14 +66,18 @@
             <label for="confirmar-password">Confirme sua senha</label>
             <input type="password" id="confirmar-password" name="confirmar-password" required>
         </div>
+        <!-- Botão de envio do formulário -->
         <button type="submit">Cadastrar</button>
     </form>
     
+    <!-- Link para login caso já tenha conta -->
     <div class="links">
         Já tem uma conta? <a href="login.html">Faça login</a>
     </div>
+    <!-- Div para mensagens de erro/sucesso do JS -->
     <div id="msg-cadastro-admin" style="margin-top:10px;"></div>
 </div>
+<!-- JS responsável pela lógica do cadastro -->
 <script src="js/cadastroAdmin.js"></script>
 </body>
 </html>

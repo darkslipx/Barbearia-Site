@@ -3,9 +3,10 @@ package br.com.barbeariadopra.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+// DTO utilizado para receber os dados de login na autenticação do usuário
+@Getter 
+@Setter 
 public class LoginRequest {
-    private String email;
-    private String senha;
+    private String email; // E-mail do usuário para login
+    private String senha; // Senha do usuário para login
 }
