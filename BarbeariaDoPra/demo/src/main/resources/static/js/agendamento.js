@@ -1,25 +1,25 @@
 const API_URL = "http://localhost:8080";
-const CLIENTE_ID = localStorage.getItem('clienteId'); // Pega o ID do cliente logado do localStorage
+const CLIENTE_ID = localStorage.getItem('clienteId');
 
-// Elementos principais do DOM usados no formulário de agendamento
 const selectProf = document.getElementById('profissional');
 const dateInput = document.getElementById('date');
 const selectHorario = document.getElementById('horario');
 const msgDiv = document.getElementById('msg-agendamento');
 const selectServico = document.getElementById('servico');
 
-// Exibe o nome do usuário no topo, caso exista no localStorage
+// Ao carregar a página, exibe o nome salvo no localStorage
 document.addEventListener('DOMContentLoaded', function() {
     const nome = localStorage.getItem('usuarioNome') || 'Usuário';
     document.getElementById('nome-usuario-header').textContent = nome;
 });
 
-// --- Controle do calendário (Flatpickr) ---
-let flatpickrInstance = null;
-let diasDisponiveis = []; // Array de dias da semana disponíveis, vindos do backend
 
-// Converte string enum do backend em número do dia da semana (0=Domingo, ..., 6=Sábado)
+// --------- Flatpickr Instance ---------
+let flatpickrInstance = null;
+let diasDisponiveis = []; // Salva os dias válidos recebidos do backend
+
 function diaEnumParaNumero(enumStr) {
+    // Domingo=0, Segunda=1, ... Sábado=6
     return {
         "DOMINGO": 0,
         "SEGUNDA_FEIRA": 1,
@@ -31,23 +31,23 @@ function diaEnumParaNumero(enumStr) {
     }[enumStr];
 }
 
-// Função passada ao flatpickr para habilitar apenas dias válidos no calendário
 function flatpickrEnableDates(date) {
+    // Só permite selecionar dias presentes em diasDisponiveis
     if (!diasDisponiveis.length) return false;
     return diasDisponiveis.includes(date.getDay());
 }
 
-// Inicializa o calendário Flatpickr com dias habilitados conforme funcionamento do profissional
+// Inicializa o Flatpickr
 function inicializarFlatpickr() {
     if (flatpickrInstance) {
-        flatpickrInstance.destroy(); // Evita instâncias duplicadas
+        flatpickrInstance.destroy();
     }
     flatpickrInstance = flatpickr(dateInput, {
         locale: "pt",
         dateFormat: "Y-m-d",
         minDate: "today",
         disableMobile: true,
-        enable: [flatpickrEnableDates], // Habilita só os dias permitidos
+        enable: [flatpickrEnableDates],
         onChange: function(selectedDates, dateStr) {
             if (!dateStr) return;
             msgDiv.innerHTML = "";
@@ -58,7 +58,7 @@ function inicializarFlatpickr() {
     });
 }
 
-// Carrega profissionais ao abrir a tela e monta o select
+// Carrega profissionais ao abrir a página
 async function carregarProfissionais() {
     selectProf.innerHTML = '<option value="">Carregando...</option>';
     try {
@@ -79,7 +79,7 @@ async function carregarProfissionais() {
     selectHorario.disabled = true;
 }
 
-// Carrega serviços e popula o select do formulário
+// Carrega serviços ao abrir a página
 async function carregarServicos() {
     selectServico.innerHTML = '<option value="">Carregando serviços...</option>';
     try {
@@ -95,7 +95,7 @@ async function carregarServicos() {
     }
 }
 
-// Quando muda o profissional, reseta datas/horários e busca os dias disponíveis daquele profissional
+// Quando seleciona um profissional, atualiza dias e Flatpickr
 selectProf.addEventListener('change', async function () {
     if (selectProf.value) {
         dateInput.disabled = false;
@@ -111,7 +111,7 @@ selectProf.addEventListener('change', async function () {
     }
 });
 
-// Limita os dias disponíveis do calendário conforme o funcionamento do profissional
+// Limita datas do calendário conforme dias disponíveis do Funcionamento
 async function limitarDiasDisponiveisCalendario() {
     const profId = selectProf.value;
     if (!profId) return;
@@ -119,8 +119,12 @@ async function limitarDiasDisponiveisCalendario() {
         const resp = await fetch(`${API_URL}/funcionamento/profissional/${profId}/dias-disponiveis`);
         if (!resp.ok) throw new Error();
         const diasDisponiveisEnum = await resp.json();
-        diasDisponiveis = diasDisponiveisEnum.map(diaEnumParaNumero); // Converte para [1, 3, 5]...
+        // Converte para números dos dias da semana
+        diasDisponiveis = diasDisponiveisEnum.map(diaEnumParaNumero);
+
         inicializarFlatpickr();
+
+        // Limpa e desabilita o horário até que uma data válida seja escolhida
         dateInput.value = "";
         selectHorario.innerHTML = '<option value="">Selecione um horário</option>';
         selectHorario.disabled = true;
@@ -129,7 +133,7 @@ async function limitarDiasDisponiveisCalendario() {
     }
 }
 
-// Carrega horários realmente disponíveis para o profissional e data escolhidos
+// Carrega horários disponíveis para o dia/profissional
 async function carregarHorariosDisponiveis() {
     const profId = selectProf.value;
     const dataSelecionada = dateInput.value;
@@ -155,7 +159,7 @@ async function carregarHorariosDisponiveis() {
     }
 }
 
-// Envio do formulário de agendamento
+// Submete o agendamento
 document.getElementById('form-agendamento').onsubmit = async function(e) {
     e.preventDefault();
     if (!CLIENTE_ID) {
@@ -180,7 +184,7 @@ document.getElementById('form-agendamento').onsubmit = async function(e) {
                 horario: { idHorario: Number(horario) },
                 status: 'PENDENTE',
                 data: data,
-                servico: { idServico: Number(servico) }
+                servico: { idServico: Number(servico) } // <- CORRETO!
             })
         });
         if (resp.ok) {
@@ -189,7 +193,7 @@ document.getElementById('form-agendamento').onsubmit = async function(e) {
             dateInput.disabled = true;
             selectHorario.innerHTML = '<option value="">Selecione um horário</option>';
             selectHorario.disabled = true;
-            carregarAgendamentosCliente(); // Atualiza a lista de agendamentos do cliente
+            carregarAgendamentosCliente(); // Atualiza a lista!
         } else {
             msgDiv.innerHTML = `<span style="color:#c62828;">Erro ao agendar!</span>`;
         }
@@ -198,7 +202,8 @@ document.getElementById('form-agendamento').onsubmit = async function(e) {
     }
 };
 
-// Carrega agendamentos do cliente logado, mostrando botão cancelar se status permitir
+
+// Carrega agendamentos do cliente, agora com botão Cancelar
 async function carregarAgendamentosCliente() {
     const clienteId = localStorage.getItem('clienteId');
     const tbody = document.getElementById('tbody-agendamentos');
@@ -211,6 +216,15 @@ async function carregarAgendamentosCliente() {
         const resp = await fetch(`${API_URL}/agendamentos/cliente/${clienteId}`);
         if (!resp.ok) throw new Error();
         const agendamentos = await resp.json();
+        //ordenar do mais recente para o mais antigo
+        agendamentos.sort((a, b) => {
+            if (a.data < b.data) return 1;
+            if (a.data > b.data) return -1;
+            // Se as datas forem iguais, ordena pelo horário
+            if ((a.horario?.horaInicio || "") < (b.horario?.horaInicio || "")) return 1;
+            if ((a.horario?.horaInicio || "") > (b.horario?.horaInicio || "")) return -1;
+            return 0;
+        });
         if (!agendamentos.length) {
             tbody.innerHTML = '<tr><td colspan="6">Nenhum agendamento encontrado.</td></tr>';
             return;
@@ -222,7 +236,6 @@ async function carregarAgendamentosCliente() {
             else if (ag.status === "CONFIRMADO") statusClass = "status-confirmado";
             else if (ag.status === "CANCELADO") statusClass = "status-cancelado";
             let botaoCancelar = "";
-            // Permite cancelar apenas se pendente ou confirmado
             if (["PENDENTE", "CONFIRMADO"].includes(ag.status)) {
                 botaoCancelar = `<button class="btn-cancelar" data-id="${ag.idAgendamento}">Cancelar</button>`;
             }
@@ -237,7 +250,7 @@ async function carregarAgendamentosCliente() {
                 </tr>
             `;
         });
-        // Evento para botão de cancelar agendamento
+        // Evento de cancelar
         tbody.querySelectorAll('.btn-cancelar').forEach(btn => {
             btn.onclick = async function() {
                 const idAgendamento = this.getAttribute('data-id');
@@ -262,7 +275,7 @@ async function carregarAgendamentosCliente() {
     }
 }
 
-// Carrega tudo ao abrir a tela: profissionais, serviços, agendamentos e calendário
+// Carrega tudo ao abrir a página:
 document.addEventListener('DOMContentLoaded', () => {
     carregarProfissionais();
     carregarServicos();

@@ -52,6 +52,7 @@ if (formCadastro) {
             if (resp.ok) {
                 msgDiv.innerHTML = `<span style="color:green;">Cadastro realizado com sucesso!</span>`;
                 formCadastro.reset();
+                window.location.href = "login.html";
             } else {
                 // Se houver erro, exibe a mensagem retornada pelo backend
                 const error = await resp.text();

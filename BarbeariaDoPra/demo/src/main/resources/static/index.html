@@ -5,25 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barbearia Estilo Clássico</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-    <!-- Conteúdo principal da página inicial da barbearia -->
-    <main>
-        <div class="login-container">
-            <!-- Logotipo da barbearia -->
-            <img src="img/logotipo-da-barbearia.jpg" alt="Logotipo da Barbearia Estilo Clássico" class="logo">
+    <div class="index-wrapper">
+        <div class="index-card">
+            <img src="img/barbeiro.png" alt="Logo Barbearia" class="logo-index">
+            <h2 class="index-subtitle">Seja Bem-vindo(a)!</h2>
+            <h1 class="index-title">Barbearia <span>Estilo Clássico</span></h1>
+            <p class="index-desc">Agende seu horário com facilidade!</p>
             
-            <!-- Título de boas-vindas -->
-            <h1>Bem-vindo à Barbearia Estilo Clássico</h1>
-            
-            <!-- Botões de acesso -->
-            <div class="buttons">
-                <!-- Link para tela de login -->
-                <a href="login.html" class="btn">Entrar</a>
-                <!-- Link para tela de cadastro -->
-                <a href="cadastro.html" class="btn">Cadastrar-se</a>
+            <div class="index-buttons">
+                <a href="login.html" class="btn-index">
+                    <i class="fa-solid fa-sign-in-alt"></i> Conectar-se
+                </a>
+                <a href="cadastro.html" class="btn-index btn-index-outline">
+                    <i class="fa-solid fa-user-plus"></i> Cadastrar-se
+                </a>
+            </div>
+            <div class="index-footer">
+                <span>Barbearia Estilo Clássico &copy; 2025</span>
             </div>
         </div>
-    </main>
+    </div>
 </body>
 </html>
